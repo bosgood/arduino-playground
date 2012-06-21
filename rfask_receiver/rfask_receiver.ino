@@ -19,33 +19,35 @@
 
 #include <VirtualWire.h>
 
+#define LED_PIN 8
+
 void setup() {
+  delay(1000);
+  pinMode(LED_PIN, OUTPUT);
   Serial.begin(9600); // Debugging only
   Serial.println("setup");
 
   // Initialise the IO and ISR
-  // vw_set_ptt_inverted(true); // Required for DR3100
-  vw_setup(4800);  // Bits per sec
   vw_set_rx_pin(3);
-  vw_rx_start();       // Start the receiver PLL running
+  vw_setup(2000);   // Bits per sec
+  vw_rx_start();    // Start the receiver PLL running
 }
 
 void loop() {
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
-
   if (vw_get_message(buf, &buflen)) { // Non-blocking
-    int i;
+    digitalWrite(LED_PIN, HIGH); // Flash a light to show received good message
 
-    digitalWrite(13, true); // Flash a light to show received good message
+    tone(LED_PIN, 33, 500);
+
     // Message with a good checksum received, dump it.
     Serial.print("Got: ");
-  
-    for (i = 0; i < buflen; i++) {
-      Serial.print(buf[i]);
-      Serial.print(" ");
-    }
+    char* charBuf = (char*)buf;
+    Serial.print(charBuf);
     Serial.println("");
-    digitalWrite(13, false);
+  
+    delay(100);
+    digitalWrite(LED_PIN, LOW);
   }
 }
