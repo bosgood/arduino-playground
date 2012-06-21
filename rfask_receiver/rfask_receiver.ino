@@ -19,7 +19,7 @@
 
 #include <VirtualWire.h>
 
-#define LED_PIN 8
+#define LED_PIN 13
 
 void setup() {
   delay(1000);
@@ -38,8 +38,6 @@ void loop() {
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
   if (vw_get_message(buf, &buflen)) { // Non-blocking
     digitalWrite(LED_PIN, HIGH); // Flash a light to show received good message
-
-    tone(LED_PIN, 33, 500);
 
     // Message with a good checksum received, dump it.
     Serial.print("Got: ");
