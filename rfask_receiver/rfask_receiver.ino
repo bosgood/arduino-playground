@@ -19,6 +19,7 @@
 
 #include <VirtualWire.h>
 
+#define RX_PIN 3
 #define LED_PIN 13
 
 void setup() {
@@ -28,7 +29,7 @@ void setup() {
   Serial.println("setup");
 
   // Initialise the IO and ISR
-  vw_set_rx_pin(3);
+  vw_set_rx_pin(RX_PIN);
   vw_setup(2000);   // Bits per sec
   vw_rx_start();    // Start the receiver PLL running
 }
@@ -42,7 +43,12 @@ void loop() {
     // Message with a good checksum received, dump it.
     Serial.print("Got: ");
     char* charBuf = (char*)buf;
-    Serial.print(charBuf);
+
+    // Remove last character of message to clean it up
+    int len = strlen(charBuf);
+    for (int i = 0; i < len - 1; i++) {
+      Serial.print(charBuf[i]);
+    }
     Serial.println("");
   
     delay(100);
