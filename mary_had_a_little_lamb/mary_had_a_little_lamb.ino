@@ -19,6 +19,8 @@ This example code is in the public domain.
  #include "pitches.h"
  #define SONG_LENGTH 24
 
+ #define SPEAKER_PIN 10
+
 // notes in the melody:
   
 int melody1[] = {
@@ -47,7 +49,7 @@ void loop() {
     // divided by the note type.
     //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
     int noteDuration = 1000 / noteDurations[thisNote];
-    tone(13, melody1[thisNote], noteDuration);
+    tone(SPEAKER_PIN, melody1[thisNote], noteDuration);
 
     // to distinguish the notes, set a minimum time between them.
     // the note's duration + 30% seems to work well:
@@ -55,6 +57,6 @@ void loop() {
     delay(pauseBetweenNotes);
 
     // stop the tone playing:
-    noTone(13);
+    noTone(SPEAKER_PIN);
   }
 }
