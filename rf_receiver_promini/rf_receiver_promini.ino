@@ -19,13 +19,18 @@
 
 #include <VirtualWire.h>
 
-#define RX_PIN 9
-#define BUZZ_PIN 10
-#define LED_PIN 13
+#define RX_PIN 8
+#define BUZZ_PIN 9
+#define LED1_PIN 13
+#define LED2_PIN 7
+
+#define NOTE_LENGTH 80
+#define FREQ 2960
 
 void setup() {
   delay(1000);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(LED1_PIN, OUTPUT);
+  pinMode(LED2_PIN, OUTPUT);
   pinMode(BUZZ_PIN, OUTPUT);
   Serial.begin(9600); // Debugging only
   Serial.println("setup");
@@ -34,17 +39,44 @@ void setup() {
   vw_set_rx_pin(RX_PIN);
   vw_setup(2000);   // Bits per sec
   vw_rx_start();    // Start the receiver PLL running
+
+  signalStarted();
+}
+
+// Signal that device has started
+void signalStarted() {
+  beep();
+  effectOn(0);
+  delay(50);
+  effectOff();
+  delay(100);
+  effectOn(0);
+  delay(50);
+  effectOff();
+}
+
+void beep() {
+    tone(BUZZ_PIN, FREQ, NOTE_LENGTH);
+    delay(NOTE_LENGTH);
+    noTone(BUZZ_PIN);
+    delay(NOTE_LENGTH);
 }
 
 void effectOff() {
-  digitalWrite(LED_PIN, LOW);
-  noTone(BUZZ_PIN);
+  digitalWrite(LED1_PIN, LOW);
+  digitalWrite(LED2_PIN, LOW);
+  // noTone(BUZZ_PIN);
   // digitalWrite(BUZZ_PIN, LOW);
 }
 
-void effectOn() {
-  digitalWrite(LED_PIN, HIGH); // Flash a light to show received good message
-  tone(BUZZ_PIN, 33, 4);
+void effectOn(int buzz) {
+  digitalWrite(LED1_PIN, HIGH); // Flash a light to show received good message
+  digitalWrite(LED2_PIN, HIGH);
+  if (buzz) {
+    beep();
+    beep();
+  }
+
   // digitalWrite(BUZZ_PIN, HIGH);
 }
 
@@ -52,7 +84,7 @@ void loop() {
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
   if (vw_get_message(buf, &buflen)) { // Non-blocking
-    effectOn();
+    effectOn(1);
 
     // Message with a good checksum received, dump it.
     Serial.print("Got: ");

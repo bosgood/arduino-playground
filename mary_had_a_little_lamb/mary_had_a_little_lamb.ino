@@ -19,7 +19,7 @@ This example code is in the public domain.
  #include "pitches.h"
  #define SONG_LENGTH 24
 
- #define SPEAKER_PIN 10
+ #define SPEAKER_PIN 9
 
 // notes in the melody:
   
